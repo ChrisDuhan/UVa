@@ -5,6 +5,7 @@ using namespace std;
 typedef vector<vector<char>> matrix;
 
 void rotate(matrix &, int);
+int filter(matrix, matrix, int, int);
 
 int main() {
 
@@ -23,8 +24,13 @@ int main() {
 				cin >> B[r][c];
 			}
 		}
-
-		rotate(B, n);
+		cout << filter(A, B, N, n);
+		for (int i = 0; i < 3; ++i) {
+			rotate(B, n);
+			cout << " " << filter(A, B, N, n);
+		}
+		cout << endl;
+		
 		/*
 		for (int r = 0; r < N; ++r) {
 			for (int c = 0; c < N; ++c) {
@@ -71,4 +77,54 @@ void rotate(matrix &M, int N) {
 		}
 	}
 	return;
+}
+/*
+int filter(matrix M, matrix m, int N, int n) {
+	int match = 0;
+	// For each spot the filter can pass over...
+	for (int r = 0; r < N - n + 1; ++r) {
+		for (int c = 0; c < N - n + 1; ++c) {
+			// ...loop through every position the filter 
+			// overlays
+			int flag = 1;
+			for (int rf = 0; rf < n; ++rf) {
+				for (int cf = 0; cf < n; ++cf) {
+					if (m[rf][cf] != M[r][c]) {
+						flag = 0;
+						break;
+					}
+				}
+			}
+			match += flag;
+		}
+	}
+	return match;
+}
+*/
+int filter(matrix M, matrix m, int N, int n) {
+	int match = 0;
+	// For each spot the filter can pass over...
+	for (int r = 0; r < N - n + 1; ++r) {
+		for (int c = 0; c < N - n + 1; ++c) {
+			// ...loop through every position the filter 
+			// overlays
+			int flag = 1;
+			int rf = 0;
+			// choosing to use while loops for the potential 
+			// efficiency gained by not continuing to compare
+			// failed matches
+			while (flag && rf < n) {
+				int cf = 0;
+				while (flag && cf < n) {
+					if (m[rf][cf] != M[r + rf][c + cf]) {
+						flag = 0;
+					}
+					++cf;
+				}
+				++rf;
+			}
+			match += flag;
+		}
+	}
+	return match;
 }
