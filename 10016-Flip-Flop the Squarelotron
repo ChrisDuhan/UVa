@@ -1,0 +1,102 @@
+//////////////////////////////////////////////////////////////////////
+//
+// Chris Duhan:   Flip-Flop the Squarelotron: 10016: chriscodes
+//
+// Data structure required: 2D vector
+//
+// Tricks of the trade: Robust index manipulation, and a lot of
+// patience
+//
+/////////////////////////////////////////////////////////////////////
+
+#include <iostream>
+#include <vector>
+#define step (LR - j + rngNo) // Using this a lot
+
+using namespace std;
+typedef vector<vector<int>> matrix;
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	int tC = 0, N = 0, opCt = 0, op;
+	cin >> tC; // Number of test cases
+	// Simpler to use a while loop to cut down on variables and 
+	// save on comparisons
+	while (tC--) {
+		cin >> N;
+		matrix M(N, vector<int>(N));
+		for (int r = 0; r < N; ++r) {
+			for (int c = 0; c < N; ++c) {
+				cin >> M[r][c];
+			}
+		}
+		int numRings = (N >> 1) + (N % 2 != 0); // ceiling division
+
+		for (int rngNo = 0; rngNo < numRings; ++rngNo) {
+			int UL = rngNo;
+			int LR = N - rngNo - 1;
+
+			// There is no reason to manipulate the innermost ring
+			// of a odd N matrix
+			if ((N % 2 == 1) && (rngNo == N >> 1)) {
+				cin.ignore(1, '\n');
+				cin.ignore(256, '\n');
+			}
+			else {
+				cin >> opCt;
+				for (int i = 0; i < opCt; ++i) {
+					cin >> op; // op must be 1,2,3 or 4
+					switch (op) {
+					case 1: // Up Down
+							// Top to bottom and vice versa row swap
+						for (int j = UL; j <= LR; ++j)
+							swap(M[UL][j], M[LR][j]);
+						// Between the rows column inversion
+						for (int j = UL + 1; j < step; ++j) {
+							swap(M[j][UL], M[step][UL]);
+							swap(M[j][LR], M[step][LR]);
+						}
+						break;
+					case 2: // Left Right
+							// Left to right and vice versa column swap
+						for (int j = UL; j <= LR; ++j)
+							swap(M[j][UL], M[j][LR]);
+						// Between the columns row inversion
+						for (int j = UL + 1; j < step; ++j) {
+							swap(M[UL][j], M[UL][step]);
+							swap(M[LR][j], M[LR][step]);
+						}
+						break;
+					case 3: // Main diagonal (about the line y = -x)
+							// Swaps left column and bottom row of ring
+						for (int j = UL + 1; j <= LR; ++j)
+							swap(M[j][UL], M[UL][j]);
+						// Swaps bottom row and right column of ring
+						for (int j = UL + 1; j < LR; ++j)
+							swap(M[LR][j], M[j][LR]);
+						break;
+					case 4: // Inverse diagonal (about the line y = x)
+							// Swaps top row and right column of ring
+						for (int j = UL; j < LR; ++j)
+							swap(M[UL][j], M[step][LR]);
+						// Swaps left column and bottom row of ring
+						for (int j = UL + 1; j <= LR; ++j)
+							swap(M[j][UL], M[LR][step]);
+						break;
+					}
+				}
+
+			}
+		}
+		for (int r = 0; r < N; ++r) {
+			for (int c = 0; c < N; ++c) {
+				if (c) cout << ' '; // Avoid printing the last space
+				cout << M[r][c];
+			}
+			cout << '\n';
+		}
+		cout << flush;
+	}
+	return 0;
+}
