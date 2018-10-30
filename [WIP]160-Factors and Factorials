@@ -1,0 +1,26 @@
+#include <iostream>
+#include <iomanip>
+#include <vector>
+
+using namespace std;
+
+
+void sieve(vector<int> &primes) {
+	primes[0] = primes[1] = 0;
+	for (int i = 2; i < N; ++i)
+		for (int j = 2; i*j < N; ++j)
+			primes[i*j] = 0;
+	return;
+}
+
+int main() {
+	int n;
+	cin >> n;
+	while (n != 0) {
+
+
+
+		cin >> n;
+	}	
+	return 0;
+}
